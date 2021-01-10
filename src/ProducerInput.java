@@ -1,0 +1,49 @@
+import entities.EnergyType;
+
+public class ProducerInput {
+    Integer id;
+    EnergyType energyType;
+    Integer maxDistributors;
+    Double priceKW;
+    Integer energyPerDistributor;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public EnergyType getEnergyType() {
+        return energyType;
+    }
+
+    public void setEnergyType(EnergyType energyType) {
+        this.energyType = energyType;
+    }
+
+    public Integer getMaxDistributors() {
+        return maxDistributors;
+    }
+
+    public void setMaxDistributors(Integer maxDistributors) {
+        this.maxDistributors = maxDistributors;
+    }
+
+    public Double getPriceKW() {
+        return priceKW;
+    }
+
+    public void setPriceKW(Double priceKW) {
+        this.priceKW = priceKW;
+    }
+
+    public Integer getEnergyPerDistributor() {
+        return energyPerDistributor;
+    }
+
+    public void setEnergyPerDistributor(Integer energyPerDistributor) {
+        this.energyPerDistributor = energyPerDistributor;
+    }
+}

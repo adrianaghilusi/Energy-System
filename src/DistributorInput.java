@@ -1,0 +1,59 @@
+import strategies.EnergyChoiceStrategyType;
+
+public class DistributorInput {
+    private Integer id;
+    private Integer contractLength;
+    private Integer initialBudget;
+    private Integer initialInfrastructureCost;
+    private Integer energyNeededKW;
+    private EnergyChoiceStrategyType producerStrategy;
+
+    public Integer getEnergyNeededKW() {
+        return energyNeededKW;
+    }
+
+    public void setEnergyNeededKW(Integer energyNeededKW) {
+        this.energyNeededKW = energyNeededKW;
+    }
+
+    public EnergyChoiceStrategyType getProducerStrategy() {
+        return producerStrategy;
+    }
+
+    public void setProducerStrategy(EnergyChoiceStrategyType producerStrategy) {
+        this.producerStrategy = producerStrategy;
+    }
+
+    public final Integer getId() {
+        return id;
+    }
+
+    public final void setId(final Integer id) {
+        this.id = id;
+    }
+
+    public final Integer getContractLength() {
+        return contractLength;
+    }
+
+    public final void setContractLength(final Integer contractLength) {
+        this.contractLength = contractLength;
+    }
+
+    public final Integer getInitialBudget() {
+        return initialBudget;
+    }
+
+    public final void setInitialBudget(final Integer initialBudget) {
+        this.initialBudget = initialBudget;
+    }
+
+    public final Integer getInitialInfrastructureCost() {
+        return initialInfrastructureCost;
+    }
+
+    public final void setInitialInfrastructureCost(final Integer initialInfrastructureCost) {
+        this.initialInfrastructureCost = initialInfrastructureCost;
+    }
+
+}
