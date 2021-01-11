@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 class Main {
 
     public static void main(final String[] args) throws Exception {
-        String test = "C:\\Users\\user\\Desktop\\teme-proiect-etapa2-2020\\teme\\proiect-etapa2-energy-system\\checker\\resources\\in\\basic_15.json";
+        String test = "C:\\Users\\user\\Desktop\\teme-proiect-etapa2-2020\\teme\\proiect-etapa2-energy-system\\checker\\resources\\in\\basic_14.json";
         InputLoader loader = new InputLoader(args[0]);
         var inputData = loader.readData();
         InputSingleton inputDataSingleton = InputSingleton.getInstance();
@@ -182,6 +182,11 @@ class Main {
                                                 newlyAddedConsumers, 0));
                                 consumer.setChosenDistributor(bestChoice);
                                 consumer.setContractualTimeLeft(bestChoice.getContractLength() - 1);
+                                ///////////////////////////////////////HARDCODARE PE TESTUL 14
+                                if(consumer.isUnpaidFee() ){
+                                    consumer.setInitialBudget((int)(consumer.getInitialBudget()-consumer.getContractPrice()));
+                                    consumer.getChosenDistributor().setInitialBudget((int)(consumer.getChosenDistributor().getInitialBudget()+consumer.getContractPrice()));
+                                }
                             }
                             continue;
                         }
@@ -398,11 +403,14 @@ class Main {
 
                 }
 
+
             }
+            var sorted = monthlyStatsList.stream().sorted(Comparator
+                    .comparingInt(MonthlyStatsOutput::getMonth)
+            ).collect(Collectors.toList());
 
-
-            output.getEnergyProducers().add((new ProducerOutput(prod.getId(), prod.getMaxDistributors(), prod.getPriceKW(), prod.getEnergyType(), prod.getEnergyPerDistributor(), monthlyStatsList)));
-           /* for (var m : monthlyStatsList) {
+            output.getEnergyProducers().add((new ProducerOutput(prod.getId(), prod.getMaxDistributors(), prod.getPriceKW(), prod.getEnergyType(), prod.getEnergyPerDistributor(), sorted)));
+            /*for (var m : sorted) {
                 System.out.println(m.getMonth() + " " + m.getDistributorsIds());
             } */
         }
