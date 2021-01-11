@@ -2,8 +2,10 @@ import entities.EnergyType;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Producer {
+public class Producer implements Observer {
     Integer id;
     EnergyType energyType;
     Integer maxDistributors;
@@ -72,5 +74,10 @@ public class Producer {
         this.maxDistributors = maxDistributors;
         this.priceKW = priceKW;
         this.energyPerDistributor = energyPerDistributor;
+    }
+
+    @Override
+    public void update(Observable o, Object energyChange) {
+        this.setEnergyPerDistributor((Integer)energyChange);
     }
 }

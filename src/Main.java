@@ -1,11 +1,16 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.junit.Assert.*;
 
 class Main {
 
     public static void main(final String[] args) throws Exception {
-        String test = "C:\\Users\\user\\Desktop\\teme-proiect-etapa2-2020\\teme\\proiect-etapa2-energy-system\\checker\\resources\\in\\basic_9.json";
-        InputLoader loader = new InputLoader(args[0]);
+        String test = "C:\\Users\\user\\Desktop\\teme-proiect-etapa2-2020\\teme\\proiect-etapa2-energy-system\\checker\\resources\\in\\basic_14.json";
+        InputLoader loader = new InputLoader(test);
         var inputData = loader.readData();
         InputSingleton inputDataSingleton = InputSingleton.getInstance();
         inputDataSingleton.setInitialData(inputData.getInitialData());
@@ -38,27 +43,14 @@ class Main {
             distributorToAdd = new Distributor(distributor.getId(), distributor.getContractLength(),
                     distributor.getInitialBudget(), distributor.getInitialInfrastructureCost(), distributor.getEnergyNeededKW(), distributor.getProducerStrategy());
             var strategy = distributor.getProducerStrategy();
-            Strategy selectedStrategy;
-            switch (strategy) {
-                case QUANTITY:
-                    selectedStrategy = new QuantityStrategy();
-                    break;
-                case GREEN:
-                    selectedStrategy = new GreenStrategy();
-                    break;
-                case PRICE:
-                    selectedStrategy = new PriceStrategy();
-                    break;
-                default:
-                    selectedStrategy = null;
-            }
+            Strategy selectedStrategy = getStrategy(strategy);
 
             distributorToAdd.setChosenProducers(selectedStrategy.applyStrategy(producerList, distributor.getEnergyNeededKW()));
-            long cost = 0 ;
-            for(var prod : distributorToAdd.getChosenProducers()){
+            long cost = 0;
+            for (var prod : distributorToAdd.getChosenProducers()) {
                 cost = cost + prod.contractCost();
             }
-            distributorToAdd.setInitialProductionCost(Math.round(cost/10));
+            distributorToAdd.setInitialProductionCost(Math.round(cost / 10));
             distributorList.add(distributorToAdd);
         }
         double paymentConstant = 1.2;
@@ -104,6 +96,12 @@ class Main {
                         .getDistributorChanges();
                 List<InputProducerChanges> monthlyProducerChanges = updates.get(month - 1).getProducerChanges();
                 List<ConsumerInput> newConsumers = updates.get(month - 1).getNewConsumers();
+                ////////////////////////////////////////////////////////////////////////////////////////////////
+                ////////////////////of
+                ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+                /////////////////////////////////////////////////////////25
 
                 for (var costChange : monthlyDistributorChanges) {
                     Integer whichDistributor = costChange.getId();
@@ -115,7 +113,7 @@ class Main {
                             .getInfrastructureCost());
 
                 }
-                for (var costChange : monthlyProducerChanges) {
+              /*  for (var costChange : monthlyProducerChanges) {
                     Integer whichProducer = costChange.getId();
                     Producer thisProducer = producerList.stream()
                             .filter(producer -> whichProducer.equals(producer.getId()))
@@ -124,7 +122,8 @@ class Main {
                     thisProducer.setEnergyPerDistributor(costChange
                             .getEnergyPerDistributor());
 
-                }
+                } */
+
                 for (var newConsumer : newConsumers) {
                     var consumerToAdd = consumerFactory
                             .getConsumer(ConsumerEnum.valueOf("Basic"));
@@ -133,6 +132,7 @@ class Main {
                     consumerToAdd.setContractualTimeLeft(0);
                     consumerList.add(consumerToAdd);
                 }
+
                 //consumatorii primesc salariu si platesc rata contractului ales
                 for (var consumer : consumerList) {
                     if (consumer.isOutOfGame()) {
@@ -282,17 +282,7 @@ class Main {
                     if (distributor.isBankrupt()) {
                         continue;
                     }
-                    for(var prod : distributor.getChosenProducers()){
-                        if(prod.getMonthlyStats() == null){
-                            prod.setMonthlyStats(new HashMap<>());
-                        }
-                        var prodMonthlyStats = prod.getMonthlyStats();
-                        if(!prodMonthlyStats.containsKey(month)){
-                            prodMonthlyStats.put(month, new ArrayList<>());
-                        }
-                        var monthDistr = prodMonthlyStats.get(month);
-                        monthDistr.add(distributor);
-                    }
+
                     distributor.setInitialBudget(distributor.getInitialBudget()
                             - distributor.getInitialInfrastructureCost());
                     if (!distributor.getContracts().isEmpty()) {
@@ -314,12 +304,52 @@ class Main {
                             }
                         }
                     }
-                }
 
+                }
+                for (var prodUpdate : monthlyProducerChanges) {
+                    Integer observer = prodUpdate.getId();
+                    Producer thisProducer = producerList.stream()
+                            .filter(producer -> observer.equals(producer.getId()))
+                            .findAny()
+                            .orElse(null);
+                    SimulationSystem observable = new SimulationSystem();
+                    observable.addObserver(thisProducer);
+                    observable.setEnergyChange(prodUpdate.getEnergyPerDistributor());
+                    assertEquals(thisProducer.getEnergyPerDistributor(), prodUpdate.getEnergyPerDistributor());
+                    for (var distributor : distributorList) {
+                        if (distributor.getChosenProducers().contains(thisProducer)) {
+                            distributor.getChosenProducers().remove(thisProducer);
+                        }
+                    }
+                }
+                for (var distributor : distributorList) {
+                    var strategy = distributor.getProducerStrategy();
+                    Strategy selectedStrategy = getStrategy(strategy);
+
+                    distributor.setChosenProducers(selectedStrategy.applyStrategy(producerList, distributor.getEnergyNeededKW()));
+                    long cost = 0;
+                    for (var prod : distributor.getChosenProducers()) {
+                        cost = cost + prod.contractCost();
+                    }
+                    distributor.setInitialProductionCost(Math.round(cost / 10));
+
+                    for (var prod : distributor.getChosenProducers()) {
+                        if (prod.getMonthlyStats() == null) {
+                            prod.setMonthlyStats(new HashMap<>());
+                        }
+                        var prodMonthlyStats = prod.getMonthlyStats();
+                        if (!prodMonthlyStats.containsKey(month)) {
+                            prodMonthlyStats.put(month, new ArrayList<>());
+                        }
+                        var monthDistr = prodMonthlyStats.get(month);
+                        monthDistr.add(distributor);
+                    }
+                }
             }
 
+
         }
-        var outputData = new OutputLoader(args[1]);
+        var outputData = new OutputLoader("output");
         var output = new Output();
         output.setConsumers(new ArrayList<>());
         output.setDistributors(new ArrayList<>());
@@ -340,25 +370,61 @@ class Main {
                         (int) contract.getContractPrice(), contract.getContractualTimeLeft()));
             }
             output.getDistributors().add(new DistributorOutput(dis.getId(),
-                    dis.getInitialBudget(), dis.isBankrupt(), contractOutputs, dis.getEnergyNeededKW(), dis.getProducerStrategy(), (int)dis.getContractFinalPrice(dis.getInitialInfrastructureCost(), dis.getInitialProductionCost(), new ArrayList<>(), 0)));
+                    dis.getInitialBudget(), dis.isBankrupt(), contractOutputs, dis.getEnergyNeededKW(), dis.getProducerStrategy(), (int) dis.getContractFinalPrice(dis.getInitialInfrastructureCost(), dis.getInitialProductionCost(), new ArrayList<>(), 0)));
         }
-        for(var prod : producerList){
+        for (var prod : producerList) {
             var monthlyStatsOutput = prod.getMonthlyStats();
             List<MonthlyStatsOutput> monthlyStatsList = new ArrayList<>();
-            if(monthlyStatsOutput == null){
-                for (int month = 1; month <= inputDataSingleton.getNumberOfTurns(); month++){
+            if (monthlyStatsOutput == null) {
+                for (int month = 1; month <= inputDataSingleton.getNumberOfTurns(); month++) {
                     monthlyStatsList.add(new MonthlyStatsOutput(month, new ArrayList<>()));
                 }
-            }
-            else {
+            } else {
+                if (monthlyStatsOutput.size() != inputDataSingleton.getNumberOfTurns()) {
+                    //System.out.println("ups");
+                    for (int i = 1; i < inputDataSingleton.getNumberOfTurns() + 1; i++) {
+                        if (!monthlyStatsOutput.containsKey(i)) {
+                            monthlyStatsList.add(new MonthlyStatsOutput(i, new ArrayList<>()));
+                        }
+
+                    }
+                }
+
                 for (var monthlyStatOutput : monthlyStatsOutput.entrySet()) {
+
                     monthlyStatsList.add(new MonthlyStatsOutput(monthlyStatOutput.getKey(), monthlyStatOutput.getValue().stream().map(d -> d.getId()).collect(Collectors.toList())));
+
+
                 }
             }
-            output.getEnergyProducers().add((new ProducerOutput(prod.getId(),prod.getMaxDistributors(),prod.getPriceKW(),prod.getEnergyType(),prod.getEnergyPerDistributor(),monthlyStatsList)));
+
+
+            output.getEnergyProducers().add((new ProducerOutput(prod.getId(), prod.getMaxDistributors(), prod.getPriceKW(), prod.getEnergyType(), prod.getEnergyPerDistributor(), monthlyStatsList)));
+         /*   for (var m : monthlyStatsList) {
+                System.out.println(m.getMonth() + " " + m.getDistributorsIds());
+            } */
         }
         outputData.setOutPutToWrite(output);
         outputData.writeData();
+    }
+
+
+    public static Strategy getStrategy(strategies.EnergyChoiceStrategyType strategy) {
+        Strategy selectedStrategy;
+        switch (strategy) {
+            case QUANTITY:
+                selectedStrategy = new QuantityStrategy();
+                break;
+            case GREEN:
+                selectedStrategy = new GreenStrategy();
+                break;
+            case PRICE:
+                selectedStrategy = new PriceStrategy();
+                break;
+            default:
+                selectedStrategy = null;
+        }
+        return selectedStrategy;
     }
 
     //metoda calculeaza cea mai buna varianta de contract pentru consumator si scade
