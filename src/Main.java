@@ -1,16 +1,15 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Map.Entry.comparingByKey;
+import static java.util.stream.Collectors.toMap;
 import static org.junit.Assert.*;
 
 class Main {
 
     public static void main(final String[] args) throws Exception {
-        String test = "C:\\Users\\user\\Desktop\\teme-proiect-etapa2-2020\\teme\\proiect-etapa2-energy-system\\checker\\resources\\in\\basic_14.json";
-        InputLoader loader = new InputLoader(test);
+        String test = "C:\\Users\\user\\Desktop\\teme-proiect-etapa2-2020\\teme\\proiect-etapa2-energy-system\\checker\\resources\\in\\basic_15.json";
+        InputLoader loader = new InputLoader(args[0]);
         var inputData = loader.readData();
         InputSingleton inputDataSingleton = InputSingleton.getInstance();
         inputDataSingleton.setInitialData(inputData.getInitialData());
@@ -327,15 +326,17 @@ class Main {
                     Strategy selectedStrategy = getStrategy(strategy);
 
                     distributor.setChosenProducers(selectedStrategy.applyStrategy(producerList, distributor.getEnergyNeededKW()));
-                    long cost = 0;
-                    for (var prod : distributor.getChosenProducers()) {
-                        cost = cost + prod.contractCost();
+                    if(month != inputDataSingleton.getNumberOfTurns()){
+                        long cost = 0;
+                        for (var prod : distributor.getChosenProducers()) {
+                            cost = cost + prod.contractCost();
+                        }
+                        distributor.setInitialProductionCost(Math.round(cost / 10));
                     }
-                    distributor.setInitialProductionCost(Math.round(cost / 10));
 
                     for (var prod : distributor.getChosenProducers()) {
                         if (prod.getMonthlyStats() == null) {
-                            prod.setMonthlyStats(new HashMap<>());
+                            prod.setMonthlyStats(new LinkedHashMap<>());
                         }
                         var prodMonthlyStats = prod.getMonthlyStats();
                         if (!prodMonthlyStats.containsKey(month)) {
@@ -349,7 +350,7 @@ class Main {
 
 
         }
-        var outputData = new OutputLoader("output");
+        var outputData = new OutputLoader(args[1]);
         var output = new Output();
         output.setConsumers(new ArrayList<>());
         output.setDistributors(new ArrayList<>());
@@ -396,11 +397,12 @@ class Main {
 
 
                 }
+
             }
 
 
             output.getEnergyProducers().add((new ProducerOutput(prod.getId(), prod.getMaxDistributors(), prod.getPriceKW(), prod.getEnergyType(), prod.getEnergyPerDistributor(), monthlyStatsList)));
-         /*   for (var m : monthlyStatsList) {
+           /* for (var m : monthlyStatsList) {
                 System.out.println(m.getMonth() + " " + m.getDistributorsIds());
             } */
         }

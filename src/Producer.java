@@ -1,9 +1,6 @@
 import entities.EnergyType;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 public class Producer implements Observer {
     Integer id;
@@ -11,7 +8,7 @@ public class Producer implements Observer {
     Integer maxDistributors;
     Double priceKW;
     Integer energyPerDistributor;
-    Map<Integer, List<Distributor>> monthlyStats;
+    LinkedHashMap<Integer, List<Distributor>> monthlyStats;
     long contractCost(){
         return (long) Math.floor(this.energyPerDistributor * this.priceKW);
     }
@@ -20,7 +17,7 @@ public class Producer implements Observer {
         return monthlyStats;
     }
 
-    public void setMonthlyStats(Map<Integer, List<Distributor>> monthlyStats) {
+    public void setMonthlyStats(LinkedHashMap<Integer, List<Distributor>> monthlyStats) {
         this.monthlyStats = monthlyStats;
     }
 
