@@ -14,6 +14,8 @@ public class Distributor implements DistributorInterface {
     private Integer energyNeededKW;
     private EnergyChoiceStrategyType producerStrategy;
     private List<Producer> chosenProducers;
+    private Integer lastContractPrice;
+
 
 
     public Distributor(Integer id, Integer contractLength, Integer initialBudget,
@@ -28,6 +30,14 @@ public class Distributor implements DistributorInterface {
 
     public Distributor() {
 
+    }
+
+    public Integer getLastContractPrice() {
+        return lastContractPrice;
+    }
+
+    public void setLastContractPrice(Integer lastContractPrice) {
+        this.lastContractPrice = lastContractPrice;
     }
 
     public List<Producer> getChosenProducers() {

@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 class Main {
 
     public static void main(final String[] args) throws Exception {
-        String test = "C:\\Users\\user\\Desktop\\teme-proiect-etapa2-2020\\teme\\proiect-etapa2-energy-system\\checker\\resources\\in\\basic_14.json";
+        String test = "C:\\Users\\user\\Desktop\\teme-proiect-etapa2-2020\\teme\\proiect-etapa2-energy-system\\checker\\resources\\in\\complex_1.json";
         InputLoader loader = new InputLoader(args[0]);
         var inputData = loader.readData();
         InputSingleton inputDataSingleton = InputSingleton.getInstance();
@@ -371,12 +371,25 @@ class Main {
                     .comparingInt(Consumer::getContractualTimeLeft)
                     .thenComparing(Consumer::getId)).collect(Collectors.toList());
             List<ContractOutput> contractOutputs = new ArrayList<>();
+            int maxMonth = 0;
+            int lastCost = 0;
             for (var contract : contractstList) {
                 contractOutputs.add(new ContractOutput(contract.getId(),
                         (int) contract.getContractPrice(), contract.getContractualTimeLeft()));
+                if(maxMonth <= contract.getContractualTimeLeft())
+                {
+                    maxMonth = contract.getContractualTimeLeft();
+                    lastCost = (int) contract.getContractPrice();
+                }
+            }
+            if(lastCost == 0){
+                dis.setLastContractPrice((int)dis.getContractFinalPrice(dis.getInitialInfrastructureCost(),dis.getInitialProductionCost(), new ArrayList<>(),0));
+            }
+            else {
+                dis.setLastContractPrice(lastCost);
             }
             output.getDistributors().add(new DistributorOutput(dis.getId(),
-                    dis.getInitialBudget(), dis.isBankrupt(), contractOutputs, dis.getEnergyNeededKW(), dis.getProducerStrategy(), (int) dis.getContractFinalPrice(dis.getInitialInfrastructureCost(), dis.getInitialProductionCost(), new ArrayList<>(), 0)));
+                    dis.getInitialBudget(), dis.isBankrupt(), contractOutputs, dis.getEnergyNeededKW(), dis.getProducerStrategy(), dis.getLastContractPrice()));
         }
         for (var prod : producerList) {
             var monthlyStatsOutput = prod.getMonthlyStats();
