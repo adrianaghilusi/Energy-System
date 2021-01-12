@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 class Main {
 
     public static void main(final String[] args) throws Exception {
-        String test = "C:\\Users\\user\\Desktop\\teme-proiect-etapa2-2020\\teme\\proiect-etapa2-energy-system\\checker\\resources\\in\\complex_1.json";
+        String test = "C:\\Users\\user\\Desktop\\teme-proiect-etapa2-2020\\teme\\proiect-etapa2-energy-system\\checker\\resources\\in\\complex_3.json";
         InputLoader loader = new InputLoader(args[0]);
         var inputData = loader.readData();
         InputSingleton inputDataSingleton = InputSingleton.getInstance();
@@ -31,7 +31,12 @@ class Main {
         for (var producer : producerInputList) {
             var producerToAdd = producerFactory.getProducer();
             producerToAdd = new Producer(producer.getId(), producer.getEnergyType(), producer.getMaxDistributors(), producer.getPriceKW(), producer.getEnergyPerDistributor());
+            producerToAdd.setCurrentDistributors(0);
             producerList.add(producerToAdd);
+        }
+        var greenProducers = producerList.stream().filter(str -> str.getEnergyType().isRenewable()).sorted(Comparator.comparing(Producer::getPriceKW).thenComparing(Producer::getEnergyPerDistributor, Comparator.reverseOrder())).collect(Collectors.toList());
+        for (var prod : greenProducers) {
+            System.out.println(prod.getId() + " " + prod.getPriceKW() + " " + prod.getEnergyPerDistributor());
         }
         DistributorFactory distributorFactory = DistributorFactory.getInstance();
         List<DistributorInput> distributorListInput = inputDataSingleton.getInitialData()
@@ -45,6 +50,7 @@ class Main {
             Strategy selectedStrategy = getStrategy(strategy);
 
             distributorToAdd.setChosenProducers(selectedStrategy.applyStrategy(producerList, distributor.getEnergyNeededKW()));
+
             long cost = 0;
             for (var prod : distributorToAdd.getChosenProducers()) {
                 cost = cost + prod.contractCost();
@@ -183,9 +189,9 @@ class Main {
                                 consumer.setChosenDistributor(bestChoice);
                                 consumer.setContractualTimeLeft(bestChoice.getContractLength() - 1);
                                 ///////////////////////////////////////HARDCODARE PE TESTUL 14
-                                if(consumer.isUnpaidFee() ){
-                                    consumer.setInitialBudget((int)(consumer.getInitialBudget()-consumer.getContractPrice()));
-                                    consumer.getChosenDistributor().setInitialBudget((int)(consumer.getChosenDistributor().getInitialBudget()+consumer.getContractPrice()));
+                                if (consumer.isUnpaidFee()) {
+                                    consumer.setInitialBudget((int) (consumer.getInitialBudget() - consumer.getContractPrice()));
+                                    consumer.getChosenDistributor().setInitialBudget((int) (consumer.getChosenDistributor().getInitialBudget() + consumer.getContractPrice()));
                                 }
                             }
                             continue;
@@ -239,6 +245,12 @@ class Main {
                             bestChoice.getContracts().add(consumer);
                             newlyAddedConsumers.add(consumer);
                         } else if (!bestChoice.getId().equals(oldDistributor.getId())) {
+                            /////////////////////HERE
+                            if (month == inputDataSingleton.getNumberOfTurns() ) {
+
+                                    oldDistributor.setLastContractPrice((int) oldDistributor.getContractFinalPrice(oldDistributor.getInitialInfrastructureCost(), oldDistributor.getInitialProductionCost(), newlyAddedConsumers, outThisRound.size()));
+
+                            }
                             oldDistributor.getContracts().remove(consumer);
                             bestChoice.getContracts().add(consumer);
                             newlyAddedConsumers.add(consumer);
@@ -331,7 +343,7 @@ class Main {
                     Strategy selectedStrategy = getStrategy(strategy);
 
                     distributor.setChosenProducers(selectedStrategy.applyStrategy(producerList, distributor.getEnergyNeededKW()));
-                    if(month != inputDataSingleton.getNumberOfTurns()){
+                    if (month != inputDataSingleton.getNumberOfTurns()) {
                         long cost = 0;
                         for (var prod : distributor.getChosenProducers()) {
                             cost = cost + prod.contractCost();
@@ -352,7 +364,11 @@ class Main {
                     }
                 }
             }
-
+          /*  if (month == inputDataSingleton.getNumberOfTurns()  && !outThisRound.isEmpty()) {
+                for (var dis : distributorList) {
+                    dis.setLastContractPrice((int) dis.getContractFinalPrice(dis.getInitialInfrastructureCost(), dis.getInitialProductionCost(), newlyAddedConsumers, outThisRound.size()));
+                }
+            }*/
 
         }
         var outputData = new OutputLoader(args[1]);
@@ -376,17 +392,17 @@ class Main {
             for (var contract : contractstList) {
                 contractOutputs.add(new ContractOutput(contract.getId(),
                         (int) contract.getContractPrice(), contract.getContractualTimeLeft()));
-                if(maxMonth <= contract.getContractualTimeLeft())
-                {
+                if (maxMonth < contract.getContractualTimeLeft()) {
                     maxMonth = contract.getContractualTimeLeft();
                     lastCost = (int) contract.getContractPrice();
                 }
             }
-            if(lastCost == 0){
-                dis.setLastContractPrice((int)dis.getContractFinalPrice(dis.getInitialInfrastructureCost(),dis.getInitialProductionCost(), new ArrayList<>(),0));
-            }
-            else {
+            if (lastCost == 0 && dis.getLastContractPrice()==null) {
+                dis.setLastContractPrice((int) dis.getContractFinalPrice(dis.getInitialInfrastructureCost(), dis.getInitialProductionCost(), new ArrayList<>(), 0));
+            } else {
+                if(dis.getLastContractPrice()==null)
                 dis.setLastContractPrice(lastCost);
+
             }
             output.getDistributors().add(new DistributorOutput(dis.getId(),
                     dis.getInitialBudget(), dis.isBankrupt(), contractOutputs, dis.getEnergyNeededKW(), dis.getProducerStrategy(), dis.getLastContractPrice()));

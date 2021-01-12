@@ -9,6 +9,16 @@ public class Producer implements Observer {
     Double priceKW;
     Integer energyPerDistributor;
     LinkedHashMap<Integer, List<Distributor>> monthlyStats;
+    Integer currentDistributors ;
+
+    public Integer getCurrentDistributors() {
+        return currentDistributors;
+    }
+
+    public void setCurrentDistributors(Integer currentDistributors) {
+        this.currentDistributors = currentDistributors;
+    }
+
     long contractCost(){
         return (long) Math.floor(this.energyPerDistributor * this.priceKW);
     }
