@@ -10,6 +10,7 @@ public class Producer implements Observer {
     Integer energyPerDistributor;
     LinkedHashMap<Integer, List<Distributor>> monthlyStats;
     Integer currentDistributors ;
+    List<Distributor> currentDistributorsList;
 
     public Integer getCurrentDistributors() {
         return currentDistributors;
@@ -86,5 +87,13 @@ public class Producer implements Observer {
     @Override
     public void update(Observable o, Object energyChange) {
         this.setEnergyPerDistributor((Integer)energyChange);
+    }
+
+    public List<Distributor> getCurrentDistributorsList() {
+        return currentDistributorsList;
+    }
+
+    public void setCurrentDistributorsList(List<Distributor> currentDistributorsList) {
+        this.currentDistributorsList = currentDistributorsList;
     }
 }
