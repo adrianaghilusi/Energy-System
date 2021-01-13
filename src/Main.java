@@ -373,7 +373,7 @@ class Main {
 
                         for (var prod : distributor.getChosenProducers()) {
                             if (prod.getMonthlyStats() == null) {
-                                prod.setMonthlyStats(new LinkedHashMap<>());
+                                prod.setMonthlyStats(new HashMap<>());
                             }
                             var prodMonthlyStats = prod.getMonthlyStats();
                             if (!prodMonthlyStats.containsKey(month)) {
@@ -398,8 +398,9 @@ class Main {
 
                         }
 
-                    }
 
+                    }
+                    producerList.sort(Comparator.comparing(Producer::getId));
                 }
                 /////////////////aici trb modificat
                 if(!producerUpdates)
@@ -426,12 +427,13 @@ class Main {
 
                     for (var prod : distributor.getChosenProducers()) {
                         if (prod.getMonthlyStats() == null) {
-                            prod.setMonthlyStats(new LinkedHashMap<>());
+                            prod.setMonthlyStats(new HashMap<>());
                         }
                         var prodMonthlyStats = prod.getMonthlyStats();
                         if (!prodMonthlyStats.containsKey(month)) {
                             prodMonthlyStats.put(month, new ArrayList<>());
                         }
+                        /////////////CRED ca aici trb currentDistr in loc de stats; i was wrong
                         var monthDistr = prodMonthlyStats.get(month);
 
                         if(monthDistr.size() >= prod.getMaxDistributors()){
@@ -454,6 +456,22 @@ class Main {
                 producerList.sort(Comparator.comparing(Producer::getId));
 
             }
+            ////////////////////////////////////if this works i m shook
+            for(var prod : producerList){
+                if(prod.getMonthlyStats()!=null && prod.getMonthlyStats().get(month)!=null)
+                if(prod.getMonthlyStats().get(month).size() != prod.getCurrentDistributors()){
+                    System.out.println("bitch wtf is u doing");
+                    for(var stats : prod.getMonthlyStats().get(month)){
+                        if(!prod.getCurrentDistributorsList().contains(stats)){
+                            System.out.println(stats.getId());
+                            prod.getMonthlyStats().get(month).remove(stats);
+                            break;
+                        }
+                    }
+                }
+            }
+
+
 
         }
 
@@ -520,9 +538,18 @@ class Main {
 
 
             }
-            var sorted = monthlyStatsList.stream().sorted(Comparator
+           /* for(var m : monthlyStatsList) {
+                Collections.sort(m.getDistributorsIds());
+                System.out.println( m.getDistributorsIds());
+            } */
+                var sorted = monthlyStatsList.stream().sorted(Comparator
                     .comparingInt(MonthlyStatsOutput::getMonth)
             ).collect(Collectors.toList());
+            for(var m : sorted) {
+                Collections.sort(m.getDistributorsIds());
+               // System.out.println( m.getDistributorsIds());
+            }
+
 
             output.getEnergyProducers().add((new ProducerOutput(prod.getId(), prod.getMaxDistributors(), prod.getPriceKW(), prod.getEnergyType(), prod.getEnergyPerDistributor(), sorted)));
         }

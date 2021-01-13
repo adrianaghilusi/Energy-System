@@ -8,7 +8,7 @@ public class Producer implements Observer {
     Integer maxDistributors;
     Double priceKW;
     Integer energyPerDistributor;
-    LinkedHashMap<Integer, List<Distributor>> monthlyStats;
+    Map<Integer, List<Distributor>> monthlyStats;
     Integer currentDistributors ;
     List<Distributor> currentDistributorsList;
 
@@ -28,7 +28,7 @@ public class Producer implements Observer {
         return monthlyStats;
     }
 
-    public void setMonthlyStats(LinkedHashMap<Integer, List<Distributor>> monthlyStats) {
+    public void setMonthlyStats(Map<Integer, List<Distributor>> monthlyStats) {
         this.monthlyStats = monthlyStats;
     }
 
