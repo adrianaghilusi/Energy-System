@@ -1,8 +1,8 @@
 import java.util.List;
 
-public class MonthlyStatsOutput {
-    Integer month;
-    List<Integer> distributorsIds;
+public final class MonthlyStatsOutput {
+    private Integer month;
+    private List<Integer> distributorsIds;
 
     public MonthlyStatsOutput(Integer month, List<Integer> distributorIds) {
         this.month = month;

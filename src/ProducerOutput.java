@@ -3,16 +3,19 @@ import entities.EnergyType;
 
 import java.util.List;
 
-@JsonPropertyOrder({"id", "maxDistributors", "priceKW","energyType", "energyPerDistributor", "monthlyStats"})
-public class ProducerOutput {
-    Integer id;
-    EnergyType energyType;
-    Integer maxDistributors;
-    Double priceKW;
-    Integer energyPerDistributor;
-    List<MonthlyStatsOutput> monthlyStats;
+@JsonPropertyOrder({"id", "maxDistributors", "priceKW", "energyType", "energyPerDistributor",
+        "monthlyStats"})
+public final class ProducerOutput {
+    private Integer id;
+    private EnergyType energyType;
+    private Integer maxDistributors;
+    private Double priceKW;
+    private Integer energyPerDistributor;
+    private List<MonthlyStatsOutput> monthlyStats;
 
-    public ProducerOutput(Integer id,Integer maxDistributors, Double priceKW,EnergyType energyType, Integer energyPerDistributor,   List<MonthlyStatsOutput> monthlyStats) {
+    public ProducerOutput(Integer id, Integer maxDistributors, Double priceKW,
+                          EnergyType energyType, Integer energyPerDistributor,
+                          List<MonthlyStatsOutput> monthlyStats) {
         this.id = id;
         this.energyType = energyType;
         this.maxDistributors = maxDistributors;

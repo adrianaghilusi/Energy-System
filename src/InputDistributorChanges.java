@@ -1,6 +1,6 @@
-public class InputDistributorChanges {
-     Integer id;
-     Integer infrastructureCost;
+public final class InputDistributorChanges {
+    private Integer id;
+    private Integer infrastructureCost;
 
     public Integer getId() {
         return id;

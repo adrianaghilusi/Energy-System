@@ -1,5 +1,9 @@
 import java.util.List;
 
 public interface Strategy {
-    public List<Producer> applyStrategy(List<Producer> producerList, Integer totalNeeded, Distributor distributor);
+    /**
+     * Returneaza o lista cu producatorii potriviti strategiei cerute de un distribuitor
+     */
+    List<Producer> applyStrategy(List<Producer> producerList, Integer totalNeeded,
+                                 Distributor distributor);
 }

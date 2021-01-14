@@ -8,19 +8,19 @@ public class DistributorInput {
     private Integer energyNeededKW;
     private EnergyChoiceStrategyType producerStrategy;
 
-    public Integer getEnergyNeededKW() {
+    public final Integer getEnergyNeededKW() {
         return energyNeededKW;
     }
 
-    public void setEnergyNeededKW(Integer energyNeededKW) {
+    public final void setEnergyNeededKW(Integer energyNeededKW) {
         this.energyNeededKW = energyNeededKW;
     }
 
-    public EnergyChoiceStrategyType getProducerStrategy() {
+    public final EnergyChoiceStrategyType getProducerStrategy() {
         return producerStrategy;
     }
 
-    public void setProducerStrategy(EnergyChoiceStrategyType producerStrategy) {
+    public final void setProducerStrategy(EnergyChoiceStrategyType producerStrategy) {
         this.producerStrategy = producerStrategy;
     }
 

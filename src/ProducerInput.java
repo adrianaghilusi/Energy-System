@@ -1,11 +1,11 @@
 import entities.EnergyType;
 
-public class ProducerInput {
-    Integer id;
-    EnergyType energyType;
-    Integer maxDistributors;
-    Double priceKW;
-    Integer energyPerDistributor;
+public final class ProducerInput {
+    private Integer id;
+    private EnergyType energyType;
+    private Integer maxDistributors;
+    private Double priceKW;
+    private Integer energyPerDistributor;
 
     public Integer getId() {
         return id;

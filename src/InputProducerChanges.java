@@ -1,6 +1,6 @@
-public class InputProducerChanges {
-    Integer id;
-    Integer energyPerDistributor;
+public final class InputProducerChanges {
+    private Integer id;
+    private Integer energyPerDistributor;
 
     public Integer getId() {
         return id;

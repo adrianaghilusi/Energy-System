@@ -3,7 +3,8 @@ import strategies.EnergyChoiceStrategyType;
 
 import java.util.List;
 
-@JsonPropertyOrder({"id", "energyNeededKW", "contractCost", "budget","producerStrategy", "isBankrupt", "contracts"})
+@JsonPropertyOrder({"id", "energyNeededKW", "contractCost", "budget", "producerStrategy",
+        "isBankrupt", "contracts"})
 public final class DistributorOutput {
     private Integer id;
     private Integer budget;
@@ -14,7 +15,8 @@ public final class DistributorOutput {
     private Integer contractCost;
 
     public DistributorOutput(final Integer id, final Integer budget, final Boolean isBankrupt,
-                             final List<ContractOutput> contracts, int energyNeededKW, EnergyChoiceStrategyType producerStrategy, Integer contractCost) {
+                             final List<ContractOutput> contracts, int energyNeededKW,
+                             EnergyChoiceStrategyType producerStrategy, Integer contractCost) {
         this.id = id;
         this.budget = budget;
         this.isBankrupt = isBankrupt;

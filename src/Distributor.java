@@ -17,7 +17,6 @@ public class Distributor implements DistributorInterface {
     private Integer lastContractPrice;
 
 
-
     public Distributor(Integer id, Integer contractLength, Integer initialBudget,
                        Integer initialInfrastructureCost, Integer energyNeededKW, EnergyChoiceStrategyType producerStrategy) {
         this.id = id;
@@ -32,35 +31,35 @@ public class Distributor implements DistributorInterface {
 
     }
 
-    public Integer getLastContractPrice() {
+    public final Integer getLastContractPrice() {
         return lastContractPrice;
     }
 
-    public void setLastContractPrice(Integer lastContractPrice) {
+    public final void setLastContractPrice(Integer lastContractPrice) {
         this.lastContractPrice = lastContractPrice;
     }
 
-    public List<Producer> getChosenProducers() {
+    public final List<Producer> getChosenProducers() {
         return chosenProducers;
     }
 
-    public void setChosenProducers(List<Producer> chosenProducers) {
+    public final void setChosenProducers(List<Producer> chosenProducers) {
         this.chosenProducers = chosenProducers;
     }
 
-    public EnergyChoiceStrategyType getProducerStrategy() {
+    public final EnergyChoiceStrategyType getProducerStrategy() {
         return producerStrategy;
     }
 
-    public void setProducerStrategy(EnergyChoiceStrategyType producerStrategy) {
+    public final void setProducerStrategy(EnergyChoiceStrategyType producerStrategy) {
         this.producerStrategy = producerStrategy;
     }
 
-    public Integer getEnergyNeededKW() {
+    public final Integer getEnergyNeededKW() {
         return energyNeededKW;
     }
 
-    public void setEnergyNeededKW(Integer energyNeededKW) {
+    public final void setEnergyNeededKW(Integer energyNeededKW) {
         this.energyNeededKW = energyNeededKW;
     }
 
