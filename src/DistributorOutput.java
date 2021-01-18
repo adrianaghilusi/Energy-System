@@ -1,5 +1,4 @@
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import strategies.EnergyChoiceStrategyType;
 
 import java.util.List;
 

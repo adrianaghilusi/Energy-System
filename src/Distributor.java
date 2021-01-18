@@ -1,5 +1,3 @@
-import strategies.EnergyChoiceStrategyType;
-
 import java.util.ArrayList;
 import java.util.List;
 

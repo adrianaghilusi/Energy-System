@@ -1,5 +1,3 @@
-import strategies.EnergyChoiceStrategyType;
-
 public class DistributorInput {
     private Integer id;
     private Integer contractLength;
