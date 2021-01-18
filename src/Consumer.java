@@ -135,4 +135,5 @@ public class Consumer implements ConsumerInterface {
         consumer.setInitialBudget(consumer.getInitialBudget()
                 + consumer.getMonthlyIncome());
     }
+
 }
